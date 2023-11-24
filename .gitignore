@@ -1,0 +1,12 @@
+# Virtual environment
+venv/
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Local development settings
+.env
+
+# Database file
+db.sqlite3
