@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Import{% endblock title %}
+
+{% block static_file %}{% endblock static_file %}
+
+{% block content %}
+
+<div>
+    <h2>Import Data</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Import</button>
+    </form>
+</div>
+
+{% endblock content %}
