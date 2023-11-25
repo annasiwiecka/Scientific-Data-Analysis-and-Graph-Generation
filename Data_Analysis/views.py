@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
-import pandas as pd
 from urllib.parse import quote, unquote
 
-# Create your views here.
-
+import pandas as pd
 import uuid
+
+
+# Create your views here.
 
 
 def generate_unique_id():
@@ -22,8 +23,6 @@ def import_and_preprocess_data(request):
                 df = pd.read_csv(file, skiprows=2, header=None)
             elif file.name.endswith(".xlsx"):
                 df = pd.read_excel(file, skiprows=2, header=None)
-            else:
-                print("Unsupported file format")
             
             df = df.iloc[2:]
 
@@ -59,8 +58,8 @@ def import_and_preprocess_data(request):
                 return redirect("success_page", processed_data_html=processed_data_id)
             else:
                 pass
-        else:
-            form = DataUploadForm()
+    else:
+        form = DataUploadForm()
 
     return render(request, "Data_Analysis/import_data.html", {
         "form": form
