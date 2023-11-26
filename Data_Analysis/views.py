@@ -19,6 +19,7 @@ def import_and_preprocess_data(request):
         form = DataUploadForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES["file"]
+            data_name = form.cleaned_data['data_name']
             if file.name.endswith(".csv"):
                 df = pd.read_csv(file, skiprows=2, header=None)
             elif file.name.endswith(".xlsx"):
@@ -46,6 +47,7 @@ def import_and_preprocess_data(request):
             ):
                 data_instances = [
                     DataModel(
+                        data_name=data_name,
                         experiment_name=row[column_mapping["experiment_name"]],
                         measurement_value=row[column_mapping["value"]],
                         timestamp=timezone.now(),

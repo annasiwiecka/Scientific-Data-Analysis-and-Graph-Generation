@@ -9,6 +9,7 @@ class DataUploadForm(forms.Form):
             }
         )
     )
+    data_name = forms.CharField(max_length=100)
 
     def clean_file(self):
         file = self.cleaned_data.get("file")
