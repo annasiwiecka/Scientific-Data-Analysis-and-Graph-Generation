@@ -27,6 +27,10 @@ def import_and_preprocess_data(request):
             
             df = df.iloc[2:]
 
+            processed_data_id = generate_unique_id()
+            if DataModel.objects.filter(processed_data_id=processed_data_id).exists():
+                return redirect("success_page", processed_data_html=processed_data_id, data_name=data_name)
+
             column_mapping = {
                 "experiment_name": None,
                 "value": None,
@@ -51,12 +55,12 @@ def import_and_preprocess_data(request):
                         experiment_name=row[column_mapping["experiment_name"]],
                         measurement_value=row[column_mapping["value"]],
                         timestamp=timezone.now(),
+                        processed_data_id=processed_data_id,
                     )
                     for _, row in df.iterrows()
                 ]
                 DataModel.objects.bulk_create(data_instances)
 
-                processed_data_id = generate_unique_id()
                 return redirect("success_page", processed_data_html=processed_data_id, data_name=data_name)
             else:
                 pass
@@ -82,5 +86,3 @@ def my_data(request):
     return render(request, 'Data_Analysis/my_data.html', {
         'preprocessed_data': preprocessed_data
     })
-
-
