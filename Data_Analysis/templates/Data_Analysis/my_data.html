@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My data{% endblock title %}
+
+{% block static_file %}
+<link rel="stylesheet" href="{% static "Data_Analysis/my_data.css" %}">
+{% endblock static_file %}
+
+{% block content %}
+
+<h1>Preprocessed Data</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Data Name</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in preprocessed_data %}
+                <tr>
+                    <td><a href="#">{{ data.data_name }}</a></td>
+                    <td>{{ data.timestamp }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

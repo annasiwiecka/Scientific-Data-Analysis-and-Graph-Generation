@@ -57,7 +57,7 @@ def import_and_preprocess_data(request):
                 DataModel.objects.bulk_create(data_instances)
 
                 processed_data_id = generate_unique_id()
-                return redirect("success_page", processed_data_html=processed_data_id)
+                return redirect("success_page", processed_data_html=processed_data_id, data_name=data_name)
             else:
                 pass
     else:
@@ -68,9 +68,19 @@ def import_and_preprocess_data(request):
         })
 
 
-def success_page(request, processed_data_html):
+def success_page(request, processed_data_html, data_name):
     decoded_html = unquote(processed_data_html)
     return render(request,"Data_Analysis/success_page.html",{
-            "processed_data_html": decoded_html
-            },
-    )
+            "processed_data_html": decoded_html,
+            "data_name": data_name
+            })
+
+
+def my_data(request):
+    preprocessed_data = DataModel.objects.order_by('-timestamp')
+
+    return render(request, 'Data_Analysis/my_data.html', {
+        'preprocessed_data': preprocessed_data
+    })
+
+
