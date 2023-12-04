@@ -14,4 +14,9 @@ urlpatterns = [
         views.my_data,
         name="my_data"
     ),
+    path(
+        "data_analysis/<uuid:processed_data_id>/",
+        views.data_analysis,
+        name="data_analysis"
+    ),
     ]

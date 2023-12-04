@@ -25,45 +25,40 @@ def import_and_preprocess_data(request):
             elif file.name.endswith(".xlsx"):
                 df = pd.read_excel(file, skiprows=2, header=None)
             
-            df = df.iloc[2:]
+            first_column_with_data = df.apply(lambda col: col.first_valid_index(), axis=1).min()
 
-            processed_data_id = generate_unique_id()
-            if DataModel.objects.filter(processed_data_id=processed_data_id).exists():
-                return redirect("success_page", processed_data_html=processed_data_id, data_name=data_name)
+            df = df.iloc[:, int(first_column_with_data):] if pd.notna(first_column_with_data) else df
+            
+            data_instances = []
+            for index, row in df.iterrows():
+                processed_data_id = generate_unique_id()
+                experiment_name = None
+                measurement_value = None
 
-            column_mapping = {
-                "experiment_name": None,
-                "value": None,
-            }
+                for col_index, value in enumerate(row):
+                    if pd.notna(value):
+                        if experiment_name is None:
+                            experiment_name = value
+                        elif measurement_value is None:
+                            measurement_value = value
+                            break
 
-            for column in df.columns:
-                values = df[column].astype(str).str.strip()
+                experiment_name = str(experiment_name) if experiment_name is not None else '0'
+                measurement_value = str(measurement_value) if measurement_value is not None else '0'
 
-                if pd.to_numeric(values, errors="coerce").notna().all():
-                    column_mapping["value"] = column
+                data_instance = DataModel(
+                    data_name=data_name,
+                    experiment_name=experiment_name, 
+                    measurement_value=measurement_value, 
+                    timestamp=timezone.now(),
+                    processed_data_id=processed_data_id,
+                )
+                data_instances.append(data_instance)
+                
+            DataModel.objects.bulk_create(data_instances)
 
-                if not pd.to_numeric(values, errors="coerce").notna().all():
-                    column_mapping["experiment_name"] = column
+        return redirect("success_page", processed_data_html=processed_data_id, data_name=data_name)
 
-            if (
-                column_mapping["value"] is not None
-                and column_mapping["experiment_name"] is not None
-            ):
-                data_instances = [
-                    DataModel(
-                        data_name=data_name,
-                        experiment_name=row[column_mapping["experiment_name"]],
-                        measurement_value=row[column_mapping["value"]],
-                        timestamp=timezone.now(),
-                        processed_data_id=processed_data_id,
-                    )
-                    for _, row in df.iterrows()
-                ]
-                DataModel.objects.bulk_create(data_instances)
-
-                return redirect("success_page", processed_data_html=processed_data_id, data_name=data_name)
-            else:
-                pass
     else:
         form = DataUploadForm()
 
@@ -86,3 +81,10 @@ def my_data(request):
     return render(request, 'Data_Analysis/my_data.html', {
         'preprocessed_data': preprocessed_data
     })
+
+def data_analysis(request, processed_data_id):
+    data_instances = DataModel.objects.filter(processed_data_id=processed_data_id)
+    
+    return render(request,"Data_Analysis/data_analysis.html",{
+            "data_instances": data_instances,
+            })
