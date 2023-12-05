@@ -21,7 +21,7 @@
         <tbody>
             {% for data in preprocessed_data %}
                 <tr>
-                    <td>{{ data.data_name }}</a></td>
+                    <td><a href="{% url "data_analysis" processed_data_id=data.processed_data_id %}">{{ data.data_name }}</a></td>
                     <td>{{ data.timestamp }}</td>
                 </tr>
             {% endfor %}
