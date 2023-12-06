@@ -15,7 +15,7 @@ urlpatterns = [
         name="my_data"
     ),
     path(
-        "data_analysis/<uuid:processed_data_id>/",
+        "data_analysis/<str:data_name>/",
         views.data_analysis,
         name="data_analysis"
     ),

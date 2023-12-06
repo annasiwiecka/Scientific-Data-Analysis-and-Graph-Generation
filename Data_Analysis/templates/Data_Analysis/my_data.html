@@ -19,12 +19,14 @@
             </tr>
         </thead>
         <tbody>
-            {% for data in preprocessed_data %}
+            {% for data_info in data_with_timestamp %}
+
                 <tr>
-                    <td><a href="{% url "data_analysis" processed_data_id=data.processed_data_id %}">{{ data.data_name }}</a></td>
-                    <td>{{ data.timestamp }}</td>
+                    <td><a href="{% url "data_analysis" data_name=data_info.data_name %}">{{ data_info.data_name }}</a></td>
+                    <td>{{ data_info.timestamp|date:"Y-m-d H:i:s" }}</td>
                 </tr>
-            {% endfor %}
+
+            {% endfor %}    
         </tbody>
     </table>
 

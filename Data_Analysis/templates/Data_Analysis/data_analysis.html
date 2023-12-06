@@ -11,8 +11,6 @@
 
 <h1>Preprocessed Data</h1>
     
-
-
 <table border="1">
     <thead>
         <tr>
@@ -21,10 +19,10 @@
 
         </tr>
     </thead>
-        {% for instance in data_instances %}
+    {% for data_instance in preprocessed_data %}
             <tr>
-                <td>{{ instance.experiment_name }}</td>
-                <td>{{ instance.measurement_value }}</td>
+                <td>{{ data_instance.experiment_name }}</td>
+                <td>{{ data_instance.measurement_value }}</td>
 
             </tr>
         {% endfor %}

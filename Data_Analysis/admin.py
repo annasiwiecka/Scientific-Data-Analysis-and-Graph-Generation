@@ -4,4 +4,5 @@ from .models import *
 # Register your models here.
 
 admin.site.register(DataModel)
-
+admin.site.register(DataName)
+admin.site.register(TimestampInfo)
